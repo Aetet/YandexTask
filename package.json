@@ -4,7 +4,7 @@
   "description": "Test task for Yandex",
   "main": "server.js",
   "scripts": {
-    "test": "test",
+    "test": "make test",
     "start": "node server.js"
   },
   "repository": {
@@ -20,5 +20,8 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Aetet/YandexTask/issues"
+  },
+  "devDependencies": {
+    "mocha": "~1.12.1"
   }
 }
