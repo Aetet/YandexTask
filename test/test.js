@@ -3,10 +3,10 @@
 var chai = require('chai');
 var expect = chai.expect;
 
+var parser;
 
 // Create a new test suite for our Bank Account
 describe('Convert query-string to javascript object', function() {
-  var parser;
   beforeEach(function () {
     parser = require('../src/parseModule.js');
   });
@@ -43,6 +43,23 @@ describe('Convert query-string to javascript object', function() {
           .to.equal('Jedi=ObiVan&Han=Solo&Sith=Palpatin');
       });
     });
+    describe('decodeQueryString testing', function() {
+      it('decode string', function () {
+        expect(parser.decodeQuery('?Empire%20is%20%D0%BD%D0%B0%D1%88%D0%B0=Council&Emperror=%D0%98%D0%BC%D0%BF%D0%B5%D1%80%D0%B8%D1%8F%20%D0%BD%D0%B0%D0%BD%D0%BE%D1%81%D0%B8%D1%82'))
+          .to.equal('?Empire is наша=Council&Emperror=Империя наносит');
+
+      });
+      it('decode normal string', function () {
+        expect(parser.decodeQuery('?Empire is наша=Council&Emperror=Империя наносит'))
+          .to.equal('?Empire is наша=Council&Emperror=Империя наносит');
+
+      });
+      it('decode empty string', function () {
+        expect(parser.decodeQuery(''))
+          .to.equal('');
+
+      });
+    });
   });
   describe('parse testing', function () {
     it('trailing &amp processing', function () {
@@ -64,8 +81,15 @@ describe('Convert query-string to javascript object', function() {
     it('spaces and cyrillic in keys processing', function () {
       expect(parser.parse('?Empire is наша=Council&Emperror=Империя наносит'))
         .to.deep.equal({
-          'Empire+is+наша': 'Council',
-          'Emperror': 'Империя+наносит'
+          'Empire is наша': 'Council',
+          'Emperror': 'Империя наносит'
+        });
+    });
+    it('decoded spaces and cyrillic in keys processing', function () {
+      expect(parser.parse('?Empire%20is%20%D0%BD%D0%B0%D1%88%D0%B0=Council&Emperror=%D0%98%D0%BC%D0%BF%D0%B5%D1%80%D0%B8%D1%8F%20%D0%BD%D0%B0%D0%BD%D0%BE%D1%81%D0%B8%D1%82'))
+        .to.deep.equal({
+          'Empire is наша': 'Council',
+          'Emperror': 'Империя наносит'
         });
     });
 
