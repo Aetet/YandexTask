@@ -3,59 +3,132 @@
 var chai = require('chai');
 var expect = chai.expect;
 
-var parser;
+var URI;
 
 // Create a new test suite for our Bank Account
 describe('Convert query-string to javascript object', function() {
   beforeEach(function () {
-    parser = require('../src/parseModule.js');
+    URI = require('../src/parseModule.js');
+  });
+  describe('constructor test', function () {
+    describe('constructor with empty string', function () {
+      var uri;
+      beforeEach(function () {
+        uri = URI('');
+      });
+      it('test path after constructor init', function () {
+        expect(uri.parts.path).is.equal(null);
+      });
+      it('test query after constructor init', function () {
+        expect(uri.parts.query).is.equal(null);
+      });
+      it('test fragment after constructor init', function () {
+        expect(uri.parts.fragment).is.equal(null);
+      });
+    });
+    describe('constructor with query without fragment', function () {
+      beforeEach(function () {
+        uri = URI('/home?foo=bar&foo=baz');
+      });
+      it('test path after constructor init', function () {
+        expect(uri.parts.path).is.equal('/home');
+      });
+      it('test query after constructor init', function () {
+        expect(uri.parts.query).is.equal('foo=bar&foo=baz');
+      });
+      it('test fragment after constructor init', function () {
+        expect(uri.parts.fragment).is.equal(null);
+      });
+    });
+    describe('constructor with fragment without query', function () {
+      beforeEach(function () {
+        uri = URI('/home#foo');
+      });
+      it('test path after constructor init', function () {
+        expect(uri.parts.path).is.equal('/home');
+      });
+      it('test query after constructor init', function () {
+        expect(uri.parts.query).is.equal(null);
+      });
+      it('test fragment after constructor init', function () {
+        expect(uri.parts.fragment).is.equal('foo');
+      });
+    });
+    describe('constructor with path only', function () {
+      beforeEach(function () {
+        uri = URI('/path');
+      });
+      it('test path after constructor init', function () {
+        expect(uri.parts.path).is.equal('/path');
+      });
+      it('test query after constructor init', function () {
+        expect(uri.parts.query).is.equal(null);
+      });
+      it('test fragment after constructor init', function () {
+        expect(uri.parts.fragment).is.equal(null);
+      });
+    });
+    describe('constructor with all elements', function () {
+      beforeEach(function () {
+        uri = URI('/path?foo=bar&foo=baz#lock');
+      });
+      it('test path after constructor init', function () {
+        expect(uri.parts.path).is.equal('/path');
+      });
+      it('test query after constructor init', function () {
+        expect(uri.parts.query).is.equal('foo=bar&foo=baz');
+      });
+      it('test fragment after constructor init', function () {
+        expect(uri.parts.fragment).is.equal('lock');
+      });
+    });
   });
   describe('Test for inner parser components', function () {
     describe('slice fragment testing', function () {
       it('slice #fragment', function () {
-        expect(parser.sliceFragment('?robot=R2D2#1robot'))
+        expect(URI.sliceFragment('?robot=R2D2#1robot'))
           .to.equal('?robot=R2D2');
       });
       it('slice empty string', function () {
-        expect(parser.sliceFragment(''))
+        expect(URI.sliceFragment(''))
           .to.equal('');
       });
       it('slice without fragment', function () {
-        expect(parser.sliceFragment('?robot=R2D2'))
+        expect(URI.sliceFragment('?robot=R2D2'))
           .to.equal('?robot=R2D2');
       });
     });
     describe('normalize queryString testing', function () {
       it('normalize prepend &amp and trailing &amp', function () {
-        expect(parser.normalizeQuery('?&Jedi=ObiVan&Sith=Palpatin&'))
+        expect(URI.normalizeQuery('?&Jedi=ObiVan&Sith=Palpatin&'))
           .to.equal('Jedi=ObiVan&Sith=Palpatin');
       });
       it('normalize several &amp and ? in a row', function () {
-        expect(parser.normalizeQuery('????&&&&Jedi=ObiVan&&Han=Solo&Sith=Palpatin&&&'))
+        expect(URI.normalizeQuery('????&&&&Jedi=ObiVan&&Han=Solo&Sith=Palpatin&&&'))
           .to.equal('Jedi=ObiVan&Han=Solo&Sith=Palpatin');
       });
       it('normalize empty string', function () {
-        expect(parser.normalizeQuery(''))
+        expect(URI.normalizeQuery(''))
           .to.equal('');
       });
       it('normalize normalized string', function () {
-        expect(parser.normalizeQuery('Jedi=ObiVan&Han=Solo&Sith=Palpatin'))
+        expect(URI.normalizeQuery('Jedi=ObiVan&Han=Solo&Sith=Palpatin'))
           .to.equal('Jedi=ObiVan&Han=Solo&Sith=Palpatin');
       });
     });
     describe('decodeQueryString testing', function() {
       it('decode string', function () {
-        expect(parser.decodeQuery('?Empire%20is%20%D0%BD%D0%B0%D1%88%D0%B0=Council&Emperror=%D0%98%D0%BC%D0%BF%D0%B5%D1%80%D0%B8%D1%8F%20%D0%BD%D0%B0%D0%BD%D0%BE%D1%81%D0%B8%D1%82'))
+        expect(URI.decodeQuery('?Empire%20is%20%D0%BD%D0%B0%D1%88%D0%B0=Council&Emperror=%D0%98%D0%BC%D0%BF%D0%B5%D1%80%D0%B8%D1%8F%20%D0%BD%D0%B0%D0%BD%D0%BE%D1%81%D0%B8%D1%82'))
           .to.equal('?Empire is наша=Council&Emperror=Империя наносит');
 
       });
       it('decode normal string', function () {
-        expect(parser.decodeQuery('?Empire is наша=Council&Emperror=Империя наносит'))
+        expect(URI.decodeQuery('?Empire is наша=Council&Emperror=Империя наносит'))
           .to.equal('?Empire is наша=Council&Emperror=Империя наносит');
 
       });
       it('decode empty string', function () {
-        expect(parser.decodeQuery(''))
+        expect(URI.decodeQuery(''))
           .to.equal('');
 
       });
@@ -63,7 +136,7 @@ describe('Convert query-string to javascript object', function() {
   });
   describe('parse testing', function () {
     it('trailing &amp processing', function () {
-      expect(parser.parse('?&Jedi=ObiVan&Sith=Palpatin&'))
+      expect(URI.parse('?&Jedi=ObiVan&Sith=Palpatin&'))
         .to.deep.equal({
           'Jedi': 'ObiVan',
           'Sith': 'Palpatin'
@@ -71,7 +144,7 @@ describe('Convert query-string to javascript object', function() {
     });
 
     it('doubling &amp', function () {
-      expect(parser.parse('?&Jaja=SithLord&&foo=bar&'))
+      expect(URI.parse('?&Jaja=SithLord&&foo=bar&'))
         .to.deep.equal({
           'Jaja': 'SithLord', 
           'foo': 'bar'
@@ -79,14 +152,14 @@ describe('Convert query-string to javascript object', function() {
     });
 
     it('spaces and cyrillic in keys processing', function () {
-      expect(parser.parse('?Empire is наша=Council&Emperror=Империя наносит'))
+      expect(URI.parse('?Empire is наша=Council&Emperror=Империя наносит'))
         .to.deep.equal({
           'Empire is наша': 'Council',
           'Emperror': 'Империя наносит'
         });
     });
     it('decoded spaces and cyrillic in keys processing', function () {
-      expect(parser.parse('?Empire%20is%20%D0%BD%D0%B0%D1%88%D0%B0=Council&Emperror=%D0%98%D0%BC%D0%BF%D0%B5%D1%80%D0%B8%D1%8F%20%D0%BD%D0%B0%D0%BD%D0%BE%D1%81%D0%B8%D1%82'))
+      expect(URI.parse('?Empire%20is%20%D0%BD%D0%B0%D1%88%D0%B0=Council&Emperror=%D0%98%D0%BC%D0%BF%D0%B5%D1%80%D0%B8%D1%8F%20%D0%BD%D0%B0%D0%BD%D0%BE%D1%81%D0%B8%D1%82'))
         .to.deep.equal({
           'Empire is наша': 'Council',
           'Emperror': 'Империя наносит'
@@ -94,7 +167,7 @@ describe('Convert query-string to javascript object', function() {
     });
 
     it('double equals processing', function () {
-      expect(parser.parse('?Leya==Organa&Han=Solo'))
+      expect(URI.parse('?Leya==Organa&Han=Solo'))
         .to.deep.equal({
           'Leya': '=Organa',
           'Han': 'Solo'
@@ -102,7 +175,7 @@ describe('Convert query-string to javascript object', function() {
     });
 
     it('key without value', function () {
-      expect(parser.parse('?&Corusant&Holocron=Sith&Jedi=Knight'))
+      expect(URI.parse('?&Corusant&Holocron=Sith&Jedi=Knight'))
         .to.deep.equal({
           'Corusant': null,
           'Holocron': 'Sith',
@@ -111,9 +184,9 @@ describe('Convert query-string to javascript object', function() {
     });
 
     it('doubling keys', function () {
-      expect(parser.parse('?Skywalker=Jedi&Skywalker=Sith&Joda=Master'))
+      expect(URI.parse('?Skywalker=Jedi&Skywalker=Sith&Joda=Master'))
         .to.have.property('Skywalker').to.have.members(["Jedi", "Sith"]);
-      expect(parser.parse('?Skywalker=Jedi&Skywalker=Sith&Joda=Master'))
+      expect(URI.parse('?Skywalker=Jedi&Skywalker=Sith&Joda=Master'))
         .to.have.property('Joda', 'Master');
     });
   });
