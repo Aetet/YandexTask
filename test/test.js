@@ -8,7 +8,7 @@ var URI;
 // Create a new test suite for our Bank Account
 describe('Convert query-string to javascript object', function() {
   beforeEach(function () {
-    URI = require('../src/parseModule.js');
+    URI = require('../src/util/URIParser.js');
   });
   describe('constructor test', function () {
     describe('constructor with empty string', function () {
@@ -136,7 +136,7 @@ describe('Convert query-string to javascript object', function() {
   });
   describe('parse testing', function () {
     it('trailing &amp processing', function () {
-      expect(URI.parse('?&Jedi=ObiVan&Sith=Palpatin&'))
+      expect(URI.parseQuery('?&Jedi=ObiVan&Sith=Palpatin&'))
         .to.deep.equal({
           'Jedi': 'ObiVan',
           'Sith': 'Palpatin'
@@ -144,7 +144,7 @@ describe('Convert query-string to javascript object', function() {
     });
 
     it('doubling &amp', function () {
-      expect(URI.parse('?&Jaja=SithLord&&foo=bar&'))
+      expect(URI.parseQuery('?&Jaja=SithLord&&foo=bar&'))
         .to.deep.equal({
           'Jaja': 'SithLord', 
           'foo': 'bar'
@@ -152,14 +152,14 @@ describe('Convert query-string to javascript object', function() {
     });
 
     it('spaces and cyrillic in keys processing', function () {
-      expect(URI.parse('?Empire is наша=Council&Emperror=Империя наносит'))
+      expect(URI.parseQuery('?Empire is наша=Council&Emperror=Империя наносит'))
         .to.deep.equal({
           'Empire is наша': 'Council',
           'Emperror': 'Империя наносит'
         });
     });
     it('decoded spaces and cyrillic in keys processing', function () {
-      expect(URI.parse('?Empire%20is%20%D0%BD%D0%B0%D1%88%D0%B0=Council&Emperror=%D0%98%D0%BC%D0%BF%D0%B5%D1%80%D0%B8%D1%8F%20%D0%BD%D0%B0%D0%BD%D0%BE%D1%81%D0%B8%D1%82'))
+      expect(URI.parseQuery('?Empire%20is%20%D0%BD%D0%B0%D1%88%D0%B0=Council&Emperror=%D0%98%D0%BC%D0%BF%D0%B5%D1%80%D0%B8%D1%8F%20%D0%BD%D0%B0%D0%BD%D0%BE%D1%81%D0%B8%D1%82'))
         .to.deep.equal({
           'Empire is наша': 'Council',
           'Emperror': 'Империя наносит'
@@ -167,7 +167,7 @@ describe('Convert query-string to javascript object', function() {
     });
 
     it('double equals processing', function () {
-      expect(URI.parse('?Leya==Organa&Han=Solo'))
+      expect(URI.parseQuery('?Leya==Organa&Han=Solo'))
         .to.deep.equal({
           'Leya': '=Organa',
           'Han': 'Solo'
@@ -175,7 +175,7 @@ describe('Convert query-string to javascript object', function() {
     });
 
     it('key without value', function () {
-      expect(URI.parse('?&Corusant&Holocron=Sith&Jedi=Knight'))
+      expect(URI.parseQuery('?&Corusant&Holocron=Sith&Jedi=Knight'))
         .to.deep.equal({
           'Corusant': null,
           'Holocron': 'Sith',
@@ -184,10 +184,68 @@ describe('Convert query-string to javascript object', function() {
     });
 
     it('doubling keys', function () {
-      expect(URI.parse('?Skywalker=Jedi&Skywalker=Sith&Joda=Master'))
+      expect(URI.parseQuery('?Skywalker=Jedi&Skywalker=Sith&Joda=Master'))
         .to.have.property('Skywalker').to.have.members(["Jedi", "Sith"]);
-      expect(URI.parse('?Skywalker=Jedi&Skywalker=Sith&Joda=Master'))
+      expect(URI.parseQuery('?Skywalker=Jedi&Skywalker=Sith&Joda=Master'))
         .to.have.property('Joda', 'Master');
+    });
+  });
+  describe('difference between requests', function () {
+    describe('difference between two strings with the same property name', function () {
+      expect(URI.diffQuery('?Skywalker=Enakin','?Skywalker=Luke'))
+        .to.have.property('Skywalker')
+          .to.have.property('first', 'Enakin');
+      expect(URI.diffQuery('?Skywalker=Enakin','?Skywalker=Luke'))
+        .to.have.property('Skywalker')
+          .to.have.property('second', 'Luke');
+      expect(URI.diffQuery('?Skywalker=Enakin','?Skywalker=Luke'))
+        .to.have.property('Skywalker')
+          .to.have.property('both', '');
+    });
+    describe('difference between array and other property value with the same property name', function () {
+      expect(
+        URI.diffQuery('?Skywalker=Enakin&Skywalker=Mara', '?Skywalker=Luke'))
+        .to.have.property('Skywalker')
+          .to.have.property('first').to.have.members(['Enakin', 'Mara']);
+      expect(
+        URI.diffQuery('?Skywalker=Enakin&Skywalker=Mara', '?Skywalker=Luke'))
+        .to.have.property('Skywalker')
+          .to.have.property('second', 'Luke');
+      expect(
+        URI.diffQuery('?Skywalker=Enakin&Skywalker=Mara', '?Skywalker=Luke'))
+        .to.have.property('Skywalker')
+          .to.have.property('both', '');
+
+    });
+    describe('difference between different objects', function () {
+      expect(
+        URI.diffQuery('?Skywalker=Enakin&Skywalker=Mara', '?Wookie=Chubaka'))
+        .to.have.property('Skywalker')
+          .to.have.property('first', 'Enakin');
+      expect(
+        URI.diffQuery('?Skywalker=Enakin&Skywalker=Mara', '?Wookie=Chubaka'))
+        .to.have.property('Skywalker')
+          .to.have.property('first', 'Mara');
+      expect(
+        URI.diffQuery('?Skywalker=Enakin&Skywalker=Mara', '?Wookie=Chubaka'))
+        .to.have.property('Skywalker')
+          .to.have.property('second', '');
+      expect(
+        URI.diffQuery('?Skywalker=Enakin&Skywalker=Mara', '?Wookie=Chubaka'))
+        .to.have.property('Skywalker')
+          .to.have.property('both', '');
+      expect(
+        URI.diffQuery('?Skywalker=Enakin&Skywalker=Mara', '?Wookie=Chubaka'))
+        .to.have.property('Wookie')
+          .to.have.property('first', '');
+      expect(
+        URI.diffQuery('?Skywalker=Enakin&Skywalker=Mara', '?Wookie=Chubaka'))
+        .to.have.property('Wookie')
+          .to.have.property('second', 'Chubaka');
+      expect(
+        URI.diffQuery('?Skywalker=Enakin&Skywalker=Mara', '?Wookie=Chubaka'))
+        .to.have.property('Wookie')
+          .to.have.property('both', '');
     });
   });
 });
