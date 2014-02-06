@@ -5,7 +5,7 @@ var expect = chai.expect;
 
 var parser;
 
-// Create a new test suite for our Bank Account
+ 
 describe('Convert query-string to javascript object', function() {
   beforeEach(function () {
     parser = require('../src/parseModule.js');
