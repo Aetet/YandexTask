@@ -8,7 +8,7 @@ var parser;
  
 describe('Convert query-string to javascript object', function() {
   beforeEach(function () {
-    parser = require('../src/parseModule.js');
+    parser = require('../src/QueryString/parseModule.js');
   });
   describe('Test for inner parser components', function () {
     describe('slice fragment testing', function () {
