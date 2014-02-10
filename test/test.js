@@ -118,3 +118,76 @@ describe('Convert query-string to javascript object', function() {
     });
   });
 });
+describe('Convert query-string to javascript object', function() {
+  beforeEach(function () {
+    Diff = require('../src/QueryString/diff');
+  });
+  describe('Difference always matter', function () {
+    it('test for equal objects', function () {
+      expect(Diff.diffQueryStringObjects({a: 1}, {a: 1}))
+        .to.deep.equal({});
+    });
+    it('just one difference between us', function () {
+      expect(Diff.diffQueryStringObjects({a: 1}, {a: 2}))
+        .to.deep.equal({a: {obj1: 1, obj2: 2}});
+    });
+    it('difference between array and single value', function () {
+      expect(Diff.diffQueryStringObjects({a: 1}, {a: [1,2]}))
+        .to.deep.equal({a: {obj1: [], obj2: [2]}});
+    });
+    it('equality in the crowd is possible?', function () {
+      expect(Diff.diffQueryStringObjects({a: [1,2,3]}, {a: [1,2,3]}))
+        .to.deep.equal({});
+    });
+    it('but not in crowd is always equal', function () {
+      expect(Diff.diffQueryStringObjects({
+        a: [1,2,3]
+      }, {
+        a: [1,2,4]
+      })).to.deep.equal({
+          a: {
+            obj1: [3],
+            obj2: [4]
+          }
+        });
+    });
+    it('We are too different arrays', function () {
+      expect(Diff.diffQueryStringObjects({a: [1,2,3]}, {a: [4,5,6]}))
+        .to.deep.equal({
+          a: {
+            obj1: [1,2,3],
+            obj2: [4,5,6]
+          }
+        });
+    });
+    it('mighty test for every case', function () {
+      var obj1 = {
+        a: 1,
+        b: 2,
+        c: [1,2,3,1],
+        d: 3,
+        f: 0,
+        h: 4,
+        g: [1,2,3,1]
+      };
+      var obj2 = {
+        a: 1,
+        b: 3,
+        c: [1,2,3,1],
+        e: 4,
+        f: undefined,
+        h: '4',
+        g: [1,2,4]
+      };
+
+      expect(Diff.diffQueryStringObjects(obj1, obj2))
+        .to.deep.equal({
+          b: {obj1: 2, obj2: 3},
+          d: 3,
+          e: 4,
+          f: {obj1: 0, obj2: undefined},
+          g: {obj1: [3], obj2: [4]}
+        });
+    });
+  });
+});

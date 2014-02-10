@@ -1,3 +1,4 @@
+
 var Diff = {
     diffQueryStringObjects: function (obj1, obj2) {
         var res = {};
@@ -7,14 +8,16 @@ var Diff = {
     },
     diffObjects: function (obj1, obj2, res) {
         var obj1Val,
-            obj2Val;
+            obj2Val,
+            obj2Array;
         for (var i in obj1) {
             if (i in obj2) {
                 obj1Val = obj1[i] + '';
                 obj2Val = obj2[i] + '';
                 if (Array.isArray(obj1[i])) {
                     res[i] = {obj1: [], obj2: []};
-                    this.diffForArray(obj1[i], obj2[i], res[i]);
+                    obj2Array = (Array.isArray(obj2[i])) ? obj2[i] : [obj2[i]];
+                    this.diffForArray(obj1[i], obj2Array, res[i]);
                     if (res[i].obj1.length === 0 && res[i].obj2.length === 0) {
                         delete res[i];
                     }
@@ -22,8 +25,8 @@ var Diff = {
                     throw new Error('This isnt suite for param object');
                 } else if (obj1Val !== obj2Val) {
                     res[i] = {
-                        obj1: obj1[i],
-                        obj2: obj2[i]
+                        obj1: obj2[i],
+                        obj2: obj1[i]
                     };
                 }
             } else {
@@ -65,6 +68,7 @@ var Diff = {
     }
 };
 
+/*
 var res = {};
 var obj1 = {
     a: 1,
@@ -87,4 +91,5 @@ var obj2 = {
 diff(obj1, obj2, res);
 diff(obj2, obj1, res);
 console.log(res);
+*/
 module.exports = Diff;

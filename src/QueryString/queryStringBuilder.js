@@ -1,4 +1,4 @@
-var generateQueryString = function (obj, url) {
+var queryStringBuilder = function (obj, url) {
     var res = '',
         paramValue,
         urlParamPosition = url.indexOf('?');
@@ -25,7 +25,7 @@ var obj = {
     Jedi: ["ObiVan", "Quai-gon", "Mace Vindoo"],
     Yoda: "Master"
 };
-var queryString = generateQueryString(obj, 'http://google.com');
+var queryString = queryStringBuilder(obj, 'http://google.com');
 console.log(queryString);
 
-module.exports = generateQueryString;
+module.exports = queryStringBuilder;
