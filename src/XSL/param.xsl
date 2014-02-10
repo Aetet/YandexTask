@@ -3,9 +3,23 @@
         <html>
             <head></head>
             <body>
-                <h1>Hello, World</h1>
+
+                <xsl:apply-templates select="Parameters/Param">
+                    <xsl:apply-templates select="Param"></xsl:apply-templates>
+                </xsl:apply-templates>
             </body>
         </html>
     </xsl:template>
- 
+    <xsl:template match="/Parameters/Param">
+        <xsl:call-template name="param-name">
+            <xsl:with-param name="paramName" select="@name"/>
+        </xsl:call-template>
+    </xsl:template>
+
+    <xsl:template name="param-name">
+        <xsl:param name="paramName"/>
+        <xsl:value-of select="$paramName"></xsl:value-of>
+        <xsl:value-of select="/Parameters/Param[@name = $paramName]"/>
+        <br />
+    </xsl:template>
 </xsl:stylesheet>
