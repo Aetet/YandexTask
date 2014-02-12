@@ -1,7 +1,14 @@
-var queryStringBuilder = function (obj, url) {
+var parseModule = require('./parseModule');
+var queryStringBuilder = function (obj, urlForParse) {
     var res = '',
         paramValue,
-        urlParamPosition = url.indexOf('?');
+        url,
+        fragmentSliced,
+        fragment,
+        urlParamPosition = urlForParse.indexOf('?');
+    fragmentSliced = parseModule.sliceFragment(urlForParse);
+    url = fragmentSliced.url;
+    fragment = fragmentSliced.fragment;
     if ((urlParamPosition > -1) && (url.length > urlParamPosition)) {
         res += '&';
     } else {
@@ -18,8 +25,9 @@ var queryStringBuilder = function (obj, url) {
         }
     }
     res = res.slice(0, res.length - 1);
-    return url + res;
+    return url + res + fragment;
 };
+/*
 var obj = {
     Sith: ["Darth", "Sidius", "Anakin"],
     Jedi: ["ObiVan", "Quai-gon", "Mace Vindoo"],
@@ -27,5 +35,6 @@ var obj = {
 };
 var queryString = queryStringBuilder(obj, 'http://google.com');
 console.log(queryString);
+*/
 
 module.exports = queryStringBuilder;

@@ -5,20 +5,23 @@ var parsingModule = {
    */
   parse: function (queryForParse) {
     if (!queryForParse) {
-      return {}
+      return {};
     }
     queryForParse = queryForParse + '';
 
     var self ,
         items,
-        paramLen, 
-        pair, 
-        key, 
+        paramLen,
+        pair,
+        key,
         value,
+        url,
         paramArray;
     self = this;
     //Обработка случая, если у нас еще и фрагмент затесался неведомым образом
-    queryForParse = self.sliceFragment(queryForParse);
+    url = self.sliceFragment(queryForParse).url;
+
+    queryForParse = url;
     queryForParse = self.normalizeQuery(queryForParse);
 
     if (!queryForParse) {
@@ -48,21 +51,26 @@ var parsingModule = {
     }
 
     return items;
-  }, 
+  },
 
   /**
    * Если <code>string</code> содержит фрагмент, то он будет отсечен,
    * если <code>string</code> не содержит фрагмент, то строка останется неизменной
-   * @param string Строка, содержащая query и fragment строку
+   * @param {object} Возвращает объект содержащий url и удаленный из него fragment
    */
   sliceFragment: function (string) {
     string += '';
+    var fragment;
     var fragmentPosition = string.indexOf('#');
-    (fragmentPosition >= 0) ? 
-      string = string.slice(0, fragmentPosition) :
-      string;
-    
-    return string;
+
+    if (fragmentPosition >= 0) {
+      fragment = string.slice(fragmentPosition, string.length);
+      string = string.slice(0, fragmentPosition);
+    } else {
+      fragment = '';
+    }
+     
+    return {url: string, fragment: fragment};
   },
   /**
    * Нормализуем строку, избавляемся от всех ? стоящих в начале,

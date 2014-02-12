@@ -2,8 +2,6 @@ var url = require('url');
 var util = require('util');
 var fs = require('fs');
 
-// задача: прочитать POST /post из readable-потока res
-// и вывести в консоли
 module.exports = function(req, res) {
 
   console.log(req.url);

@@ -3,7 +3,7 @@
 var chai = require('chai');
 var expect = chai.expect;
 
-var parser;
+var parser, queryStringBuilder, Diff;
 
  
 describe('Convert query-string to javascript object', function() {
@@ -13,15 +13,15 @@ describe('Convert query-string to javascript object', function() {
   describe('Test for inner parser components', function () {
     describe('slice fragment testing', function () {
       it('slice #fragment', function () {
-        expect(parser.sliceFragment('?robot=R2D2#1robot'))
+        expect(parser.sliceFragment('?robot=R2D2#1robot').url)
           .to.equal('?robot=R2D2');
       });
       it('slice empty string', function () {
-        expect(parser.sliceFragment(''))
+        expect(parser.sliceFragment('').url)
           .to.equal('');
       });
       it('slice without fragment', function () {
-        expect(parser.sliceFragment('?robot=R2D2'))
+        expect(parser.sliceFragment('?robot=R2D2').url)
           .to.equal('?robot=R2D2');
       });
     });
@@ -73,7 +73,7 @@ describe('Convert query-string to javascript object', function() {
     it('doubling &amp', function () {
       expect(parser.parse('?&Jaja=SithLord&&foo=bar&'))
         .to.deep.equal({
-          'Jaja': 'SithLord', 
+          'Jaja': 'SithLord',
           'foo': 'bar'
         });
     });
@@ -190,4 +190,31 @@ describe('Convert query-string to javascript object', function() {
         });
     });
   });
+});
+describe('Object to queryString', function () {
+  var obj;
+  beforeEach(function () {
+    queryStringBuilder = require('../src/QueryString/queryStringBuilder');
+
+    obj = {
+        Sith: ["Darth", "Sidius", "Anakin"],
+        Jedi: ["ObiVan", "Quai-gon", "MaceVindoo"],
+        Yoda: "Master"
+    };
+  });
+
+  it('add queryString to normal URL', function () {
+
+    expect(queryStringBuilder(obj, 'http://ya.ru'))
+      .to.be.equal('http://ya.ru?Sith=Darth&Sith=Sidius&Sith=Anakin&Jedi=ObiVan&Jedi=Quai-gon&Jedi=MaceVindoo&Yoda=Master');
+  });
+  it('add queryString to fragmentedURL', function () {
+    expect(queryStringBuilder(obj, 'http://ya.ru#frag'))
+      .to.be.equal('http://ya.ru?Sith=Darth&Sith=Sidius&Sith=Anakin&Jedi=ObiVan&Jedi=Quai-gon&Jedi=MaceVindoo&Yoda=Master#frag');
+  });
+  it('add queryString to already-defined query url', function () {
+    expect(queryStringBuilder(obj, 'http://ya.ru?flag=first&flag=second&Jedi=Solo#frag'))
+      .to.be.equal('http://ya.ru?flag=first&flag=second&Jedi=Solo&Sith=Darth&Sith=Sidius&Sith=Anakin&Jedi=ObiVan&Jedi=Quai-gon&Jedi=MaceVindoo&Yoda=Master#frag');
+  });
+
 });
