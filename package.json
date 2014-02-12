@@ -4,7 +4,7 @@
   "description": "Test task for Yandex",
   "main": "server.js",
   "scripts": {
-    "test": "test",
+    "test": "make test",
     "start": "node server.js"
   },
   "repository": {
@@ -20,5 +20,12 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Aetet/YandexTask/issues"
+  },
+  "devDependencies": {
+    "mocha": "~1.12.1",
+    "chai": "~1.9.0",
+    "grunt": "~0.4.2",
+    "grunt-contrib-connect": "~0.6.0",
+    "grunt-contrib-watch": "~0.5.3"
   }
 }

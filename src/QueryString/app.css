@@ -1,0 +1,40 @@
+.bTitle {
+    text-align: center;
+    font: Arial, sans-serif;
+    color: #37496d;
+}
+.bWrap {
+    padding: 10px;
+    margin: auto;
+    margin-bottom: 5%;
+    width: 50%;
+    background: -moz-linear-gradient(center top , #5588BB 0px, #1B4F88 100%) repeat scroll 0 0 #1B4F88;
+    background:  -webkit-linear-gradient(top, rgb(85, 136, 187) 0px, rgb(27, 79, 136) 100%) rgb(27, 79, 136);
+}
+.bTextFieldWrap {
+}
+.bButtonSubmit {
+    width: 20%;
+    margin-left: 8%;
+    margin-right: 8%;
+}
+.bFormInput {
+    width: 30%;
+    font: 100% Arial, sans-serif;
+    margin: auto;
+    padding-left: .3em;
+    outline: 0;
+    background: rgb(255, 255, 255);
+    border: 1px solid;
+    border-collapse: separate;
+    color: #000;
+    line-height: 120%;
+}
+.bResult {
+    text-align: center;
+    padding: 10px;
+    margin: auto;
+    width: 50%;
+    color: #1738CF;
+    background: none;
+}

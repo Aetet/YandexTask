@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xml" href="param.xsl"?>
+
+ <Parameters name="HOHO">
+    <Param name="Jedi">
+        <Value>ObiVan</Value>
+        <Value>Yoda</Value>
+    </Param>
+    <Param name="Sith">
+        <Value>Palpatin</Value>
+        <Value>Darth Keydus</Value>
+    </Param>
+    <Param name="Wookie">
+        <Value>AAAAARRRR</Value>
+    </Param>
+</Parameters>
