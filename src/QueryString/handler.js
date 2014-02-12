@@ -5,7 +5,7 @@ var fs = require('fs');
 module.exports = function(req, res) {
 
   console.log(req.url);
-  var parseModule = require('./parseModule');
+  var parseModule = require('./QueryParser');
   console.log('parseModule', parseModule);
   var urlParsed = url.parse(req.url, true);
 

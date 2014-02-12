@@ -8,7 +8,7 @@ var parser, queryStringBuilder, Diff;
  
 describe('Convert query-string to javascript object', function() {
   beforeEach(function () {
-    parser = require('../src/QueryString/parseModule.js');
+    parser = require('../src/QueryString/QueryParser');
   });
   describe('Test for inner parser components', function () {
     describe('slice fragment testing', function () {
@@ -120,7 +120,7 @@ describe('Convert query-string to javascript object', function() {
 });
 describe('Convert query-string to javascript object', function() {
   beforeEach(function () {
-    Diff = require('../src/QueryString/diff');
+    Diff = require('../src/QueryString/Diff');
   });
   describe('Difference always matter', function () {
     it('test for equal objects', function () {
