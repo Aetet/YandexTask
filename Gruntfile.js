@@ -10,10 +10,16 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     connect: {
-      server: {
+      parser: {
         options: {
           port: 9001,
-          base: '.'
+          base: './src/QueryString'
+        }
+      },
+      xsl: {
+        options: {
+          port: 9001,
+          base: './src/XSL'
         }
       }
     },
@@ -24,7 +30,9 @@ module.exports = function(grunt) {
       }
     }
   });
-  grunt.registerTask('default', ['connect', 'watch']);
+  grunt.registerTask('parser', ['connect:parser', 'watch']);
+  grunt.registerTask('xsl', ['connect:xsl', 'watch']);
+  grunt.registerTask('default', 'parser');
 
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-connect');
