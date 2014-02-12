@@ -101,8 +101,16 @@
       string += '';
       try {
         return decodeURIComponent(string);
-      } catch(e) {
+      } catch (e) {
         //Если стандартный декодер провалился, то возвращаем строку как есть
+        return string;
+      }
+    },
+    encodeQuery: function (string) {
+      string += '';
+      try {
+        return encodeURIComponent(string);
+      } catch (e) {
         return string;
       }
     }

@@ -26,7 +26,7 @@
     if ((urlParamPosition > -1) && (url.length > urlParamPosition)) {
       res += '&';
     } else {
-      res += '?';
+      url += '?';
     }
 
     for (var i in obj) {
@@ -40,8 +40,12 @@
       }
     }
 
-    res = res.slice(0, res.length - 1);
-    return url + res + fragment;
+
+    //Небольшой хак для обработки ? Todo пофиксить
+    res = (res.indexOf('%26') === 0) ? res.slice(2, res.length - 1) : res.slice(0, res.length - 1);
+
+    result = url + QueryParser.encodeQuery(res + fragment);
+    return result;
   };
 
   //Экспортируем через NodeJS модуль или глобальный объект

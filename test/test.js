@@ -197,8 +197,8 @@ describe('Object to queryString', function () {
     queryStringBuilder = require('../src/QueryString/queryStringBuilder');
 
     obj = {
-        Sith: ["Darth", "Sidius", "Anakin"],
-        Jedi: ["ObiVan", "Quai-gon", "MaceVindoo"],
+        Sith: ["Дарт", "Sidius", "Anakin"],
+        Jedi: ["ObiVan", "Quai-gon", "Mace Vindoo"],
         Yoda: "Master"
     };
   });
@@ -206,15 +206,15 @@ describe('Object to queryString', function () {
   it('add queryString to normal URL', function () {
 
     expect(queryStringBuilder(obj, 'http://ya.ru'))
-      .to.be.equal('http://ya.ru?Sith=Darth&Sith=Sidius&Sith=Anakin&Jedi=ObiVan&Jedi=Quai-gon&Jedi=MaceVindoo&Yoda=Master');
+      .to.be.equal('http://ya.ru?Sith%3D%D0%94%D0%B0%D1%80%D1%82%26Sith%3DSidius%26Sith%3DAnakin%26Jedi%3DObiVan%26Jedi%3DQuai-gon%26Jedi%3DMace%20Vindoo%26Yoda%3DMaster');
   });
   it('add queryString to fragmentedURL', function () {
     expect(queryStringBuilder(obj, 'http://ya.ru#frag'))
-      .to.be.equal('http://ya.ru?Sith=Darth&Sith=Sidius&Sith=Anakin&Jedi=ObiVan&Jedi=Quai-gon&Jedi=MaceVindoo&Yoda=Master#frag');
+      .to.be.equal('http://ya.ru?Sith%3D%D0%94%D0%B0%D1%80%D1%82%26Sith%3DSidius%26Sith%3DAnakin%26Jedi%3DObiVan%26Jedi%3DQuai-gon%26Jedi%3DMace%20Vindoo%26Yoda%3DMaster%23frag');
   });
   it('add queryString to already-defined query url', function () {
     expect(queryStringBuilder(obj, 'http://ya.ru?flag=first&flag=second&Jedi=Solo#frag'))
-      .to.be.equal('http://ya.ru?flag=first&flag=second&Jedi=Solo&Sith=Darth&Sith=Sidius&Sith=Anakin&Jedi=ObiVan&Jedi=Quai-gon&Jedi=MaceVindoo&Yoda=Master#frag');
+      .to.be.equal('http://ya.ru?flag=first&flag=second&Jedi=Solo%26Sith%3D%D0%94%D0%B0%D1%80%D1%82%26Sith%3DSidius%26Sith%3DAnakin%26Jedi%3DObiVan%26Jedi%3DQuai-gon%26Jedi%3DMace%20Vindoo%26Yoda%3DMaster%23frag');
   });
 
 });
