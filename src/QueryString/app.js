@@ -1,9 +1,28 @@
 (function () {
-  var firstField = document.querySelector('.jsFirstQuery');
-  var secondField = document.querySelector('.jsSecondQuery');
-  var resultField = document.querySelector('jsResultQuery');
-  var resultButton = document.querySelector('.jsSubmit');
+  var firstField,
+      secondField,
+      resultField,
+      resultButton;
+      
+  firstField = document.querySelector('.jsFirstQuery');
+  secondField = document.querySelector('.jsSecondQuery');
+  resultField = document.querySelector('.jsResultQuery');
+  resultButton = document.querySelector('.jsSubmit');
 
   resultButton.addEventListener('click', function (e) {
+    var firstValue,
+        secondValue,
+        firstQueryObject,
+        secondQueryObject,
+        diff;
+    firstValue = firstField.value;
+    secondValue = secondField.value;
+
+    firstQueryObject = QueryParser.parse(firstValue);
+    secondQueryObject = QueryParser.parse(secondValue);
+
+    diff = Diff.diffQueryStringObjects(firstQueryObject, secondQueryObject);
+
+    resultField.innerHTML = JSON.stringify(diff);
   });
 })();

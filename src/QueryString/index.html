@@ -3,14 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <title></title>
+  <link type="text/css" rel="stylesheet" href="app.css" type="text/stylesheet" >
 </head>
 <body>
-    <input type="text" class="jsFirstQuery" />
-    <input type="text" class="jsSecondQuery" />
-    <button class="jsSubmit">Clicker</button>
-    <textarea class="jsResultQuery"></textarea>
-    <script src="app.js" type="text/javascript"></script>
-    <script src="QueryParser.js" type="text/javascript"></script>
-    <script src="Diff.js" type="text/javascript"></script>
+
+  <h1 class="bTitle">Разница между двумя объектами</h1>
+  <div class="bWrap">
+      <div class="bTextFieldWrap">
+          <input type="text" class="jsFirstQuery bFormInput" />
+          <button class="jsSubmit bButtonSubmit">Clicker</button>
+          <input type="text" class="jsSecondQuery bFormInput" />
+      </div>
+  </div>
+  <div class="jsResultQuery bResult"></div>
+  <script src="app.js" type="text/javascript"></script>
+  <script src="QueryParser.js" type="text/javascript"></script>
+  <script src="Diff.js" type="text/javascript"></script>
 </body>
 </html>
